@@ -6,6 +6,7 @@ from datetime import datetime
 from .base import BaseEmailService, ServiceMessage
 from ..utils import random_string
 from ..logging_config import get_logger
+import random
 
 # Get module logger
 logger = get_logger(__name__)
@@ -31,12 +32,6 @@ class XTempMailService(BaseEmailService):
         try:
             from xtempmail.aiomail import Email, EMAIL
 
-            name = kwargs.get("name", "") or random_string()
-            domain = kwargs.get("domain", "mailto.plus")
-
-            logger.debug(f"Creating account with name: {name}, domain: {domain}")
-
-            # Map domain to EMAIL enum
             domain_map = {
                 "mailto.plus": EMAIL.MAILTO_PLUS,
                 "fexpost.com": EMAIL.FEXPOST_COM,
@@ -48,8 +43,14 @@ class XTempMailService(BaseEmailService):
                 "merepost.com": EMAIL.MEREPOST_COM,
             }
 
-            ext = domain_map.get(domain, EMAIL.MAILTO_PLUS)
-            logger.debug(f"Selected domain extension: {ext}")
+            # choose a random domain
+
+            name = kwargs.get("name", "") or random_string()
+            domain = random.choice(list(domain_map.keys()))
+
+            ext = domain_map.get(domain)
+
+            logger.debug(f"Creating account with name: {name}, domain: {domain}")
 
             # Create email instance
             self.email_instance = Email(name=name, ext=ext)
