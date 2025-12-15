@@ -41,6 +41,11 @@ Source = "https://github.com/jonnieey/tmpmail"
 [tool.hatch.version]
 path = "src/tmpmail/__about__.py"
 
+[tool.hatch.envs.dev]
+dependencies = [
+  "pre-commit"
+]
+
 [tool.hatch.envs.types]
 extra-dependencies = [
   "mypy>=1.0.0",
