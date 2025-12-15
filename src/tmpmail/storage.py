@@ -13,7 +13,7 @@ class AccountStorage:
 
     def __init__(self, data_dir: Optional[Path] = None):
         if data_dir is None:
-            data_dir = XDG_DATA_HOME / "tempmail"
+            data_dir = XDG_DATA_HOME / "tmpmail"
 
         self.data_dir = data_dir
         self.accounts_file = data_dir / "accounts.json"
@@ -62,20 +62,30 @@ class AccountStorage:
         except (json.JSONDecodeError, FileNotFoundError):
             return []
 
-    def get_account_by_index(self, index: int) -> Optional[Dict[str, Any]]:
-        """Get account by index (1-based, from most recent)"""
+    def get_account_by_index(self, index: int, service: Optional[str] = None):
+        """Get account by index (1-based), optionally filtered by service"""
         accounts = self.load_all_accounts_raw()
 
-        if index <= 0 or index > len(accounts):
+        # Filter by service if specified
+        if service:
+            accounts = [acc for acc in accounts if acc.get("service") == service]
+
+        try:
+            return accounts[
+                -index
+            ]  # Negative index because accounts are stored newest first
+        except IndexError:
             return None
 
-        # Return from most recent
-        return accounts[-index]
-
-    def get_recent_accounts(self, count: int = 10) -> List[Dict[str, Any]]:
-        """Get most recent accounts"""
+    def get_recent_accounts(self, count: int = 10, service: Optional[str] = None):
+        """Get recent accounts, optionally filtered by service"""
         accounts = self.load_all_accounts_raw()
-        return accounts[-count:] if accounts else []
+
+        # Filter by service if specified
+        if service:
+            accounts = [acc for acc in accounts if acc.get("service") == service]
+
+        return accounts[-count:] if len(accounts) >= count else accounts
 
     def get_accounts_by_service(self, service: str) -> List[Dict[str, Any]]:
         """Get all accounts for a specific service"""
