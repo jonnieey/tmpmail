@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import asyncio
-import logging
-from typing import List, Dict, Any, Optional, Callable
+from typing import List, Dict, Any, Callable
 from datetime import datetime
 from .base import BaseEmailService, ServiceMessage
 from ..logging_config import get_logger
@@ -19,7 +18,7 @@ class MailTMService(BaseEmailService):
         super().__init__()
         self.mailtm = None
         self._known_message_ids = set()
-        logger.debug(f"MailTMService initialized")
+        logger.debug("MailTMService initialized")
 
     async def create_account(self, **kwargs) -> Dict[str, Any]:
         """Create new MailTM account"""
@@ -50,7 +49,7 @@ class MailTMService(BaseEmailService):
             }
 
             logger.info(f"MailTM account created: {account.address}")
-            logger.debug(f"Account data stored")
+            logger.debug("Account data stored")
 
             return account_data
 

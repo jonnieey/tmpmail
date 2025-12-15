@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import asyncio
-import logging
-from typing import List, Dict, Any, Optional, Callable
+from typing import List, Dict, Any, Callable
 from datetime import datetime
 from .base import BaseEmailService, ServiceMessage
 from ..utils import random_string
@@ -23,7 +22,7 @@ class XTempMailService(BaseEmailService):
         self._message_queue = asyncio.Queue()
         self._is_listening = False
         self._processed_message_ids = set()
-        logger.debug(f"XTempMailService initialized")
+        logger.debug("XTempMailService initialized")
 
     async def create_account(self, **kwargs) -> Dict[str, Any]:
         """Create a new XTempMail account"""
@@ -186,7 +185,7 @@ class XTempMailService(BaseEmailService):
 
         # Reset processed IDs for this session
         self._processed_message_ids.clear()
-        logger.debug(f"Cleared processed message IDs, set monitoring flag")
+        logger.debug("Cleared processed message IDs, set monitoring flag")
 
         # STEP 1: Process any existing/old messages immediately
         logger.debug("Processing existing messages")
@@ -196,7 +195,7 @@ class XTempMailService(BaseEmailService):
         async def handle_new_message(raw_msg):
             """Handle incoming XTempMail messages via event system"""
             try:
-                logger.debug(f"Event received for new message")
+                logger.debug("Event received for new message")
                 message = self._convert_to_servicemessage(raw_msg)
 
                 # Check if we've already processed this message
@@ -462,7 +461,7 @@ class XTempMailService(BaseEmailService):
             await self.email_instance.email.send_message(
                 to_email, subject, text, multiply_file=attachments
             )
-            logger.info(f"Message sent successfully")
+            logger.info("Message sent successfully")
         else:
             logger.warning("send_message method not available")
 

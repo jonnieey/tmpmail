@@ -113,7 +113,7 @@ tmpmail use 1 --service xtempmail
 
 You can configure `tmpmail` using environment variables:
 
-| Variable | Description | 
+| Variable | Description |
 |----------|-------------|
 | `TMPMAIL_LINK_PATTERN` | Default regex pattern for link extraction. |
 | `BROWSER` or `PRIVATE_BROWSER` | Command to open links (defaults to `xdg-open`). |

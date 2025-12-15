@@ -4,12 +4,9 @@ import argparse
 import sys
 import os
 import pyperclip
-import logging
-from typing import Optional, List
 
 from .config import ServiceRegistry
 from .storage import AccountStorage
-from .base import BaseEmailService
 from .services.base import ServiceMessage
 from .logging_config import setup_logging, get_logger
 
@@ -197,7 +194,7 @@ Examples:
             logger.warning(
                 f"--domain option is only valid for xtempmail service, ignoring for {args.service}"
             )
-            print(f"Warning: --domain option is only valid for xtempmail service")
+            print("Warning: --domain option is only valid for xtempmail service")
             args.domain = None
 
         try:
@@ -224,10 +221,10 @@ Examples:
             self.storage.save_account(account)
 
             logger.info(f"Account created successfully: {account.address}")
-            print(f"\n✅ Account created successfully!")
+            print("\n✅ Account created successfully!")
             print(f"📧 Email: {account.address}")
             pyperclip.copy(account.address)
-            print(f"📋 Email copied to clipboard")
+            print("📋 Email copied to clipboard")
 
             # Start monitoring
             await self.start_monitoring(account, args)
@@ -324,18 +321,18 @@ Examples:
         for name, description in services.items():
             print(f"  {name:<15} - {description}")
 
-        print(f"\nUsage examples:")
-        print(f"  tmpmail new <service>          # Create new account")
-        print(f"  tmpmail list [service]         # List accounts")
-        print(f"  tmpmail use <index> [--service <service>]  # Use existing account")
+        print("\nUsage examples:")
+        print("  tmpmail new <service>          # Create new account")
+        print("  tmpmail list [service]         # List accounts")
+        print("  tmpmail use <index> [--service <service>]  # Use existing account")
 
     async def start_monitoring(self, account, args):
         """Start monitoring for messages, extract links"""
         logger.info("Starting message monitoring")
 
         print(f"\n⏰ Timeout after {args.timeout} seconds")
-        print(f"\n🔍 Monitoring for links...")
-        print(f"📝 Press Ctrl+C to stop\n")
+        print("\n🔍 Monitoring for links...")
+        print("📝 Press Ctrl+C to stop\n")
 
         # Track processed messages to avoid duplicates
         processed_ids = set()
@@ -403,7 +400,7 @@ Examples:
             # Copy to clipboard
             pyperclip.copy(clean_link)
             logger.info(f"Link copied to clipboard: {clean_link}")
-            print(f"📋 Link copied to clipboard")
+            print("📋 Link copied to clipboard")
 
             # Open in browser
             await self._open_in_browser(clean_link)
@@ -413,7 +410,6 @@ Examples:
 
     async def _open_in_browser(self, url: str):
         """Open URL in browser asynchronously"""
-        import subprocess
         import shlex
 
         browser = os.getenv("PRIVATE_BROWSER", os.getenv("BROWSER", "xdg-open"))
@@ -428,7 +424,7 @@ Examples:
 
         # Don't wait for browser to close
         logger.info(f"Opening URL in browser: {url}")
-        print(f"🌐 Opening link in browser...")
+        print("🌐 Opening link in browser...")
 
         # Check if browser opened successfully
         await asyncio.sleep(0.5)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any, Optional, Callable, Union
+from typing import List, Dict, Any, Optional, Callable
 import asyncio
 from dataclasses import dataclass, asdict
 from datetime import datetime

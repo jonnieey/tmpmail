@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import re
 import pyperclip
 import subprocess
 import shlex
@@ -7,7 +6,7 @@ import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Optional, List, Dict, Any
-import asyncio
+import re
 
 BROWSER = os.getenv("PRIVATE_BROWSER", os.getenv("BROWSER", "qutebrowser -T"))
 
@@ -78,7 +77,6 @@ class MessageProcessor:
 
     def extract_links(self, message, pattern: Optional[str] = None) -> List[str]:
         """Extract only Temi links from message text"""
-        import re
 
         if not pattern:
             pattern = self.regex_pattern
