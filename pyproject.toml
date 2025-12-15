@@ -27,9 +27,10 @@ classifiers = [
 dependencies = [
     "aiohttp",
     "pyperclip",
-    "mailtm",
+    "pydantic",
     "xdg",
-    "MailTMAPI @ git+https://github.com/jonnieey/MailTM@dev",
+    "mailtmapi @ git+https://github.com/jonnieey/MailTM.git@dev",
+    "xtempmail @ git+https://github.com/krypton-byte/xtempmail"
 ]
 
 [project.urls]
@@ -69,4 +70,4 @@ exclude_lines = [
 allow-direct-references = true
 
 [project.scripts]
- tempmail = "tmpmail.cli:main"
+ tmpmail = "tmpmail.cli:main"
