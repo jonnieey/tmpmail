@@ -180,10 +180,13 @@ Examples:
             ],
             help="Domain for XTempMail (only valid with xtempmail service)",
         )
-
-        # Add more service-specific groups here as needed
-        # For example:
-        # mailtm_group = parser.add_argument_group("MailTM options")
+        guerrillamail_group = parser.add_argument_group(
+            "Guerrilla Mail options", "Options specific to Guerrilla Mail service"
+        )
+        guerrillamail_group.add_argument(
+            "--local-part",
+            help="Custom local part for email address (e.g., 'myname' for myname@guerrillamail.com)",
+        )
 
     async def new_account(self, args):
         """Handle creating new account"""
@@ -207,6 +210,8 @@ Examples:
                 kwargs["name"] = args.name
             if args.service == "xtempmail" and args.domain:
                 kwargs["domain"] = args.domain
+            if args.service == "guerrillamail" and args.local_part:
+                kwargs["local_part"] = args.local_part
 
             # Create account
             logger.info(f"Creating {args.service} account...")

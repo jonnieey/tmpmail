@@ -2,7 +2,7 @@
 from typing import Dict, Type
 from .services.xtempmail_service import XTempMailService
 from .services.mailtm_service import MailTMService
-# from services.tenminmail import TenMinMailService
+from .services.guerrillamail_service import GuerrillaMailService
 
 
 class ServiceRegistry:
@@ -42,14 +42,11 @@ class ServiceRegistry:
             # Get unique service names
             service_name = getattr(service_class, "SERVICE_NAME", name)
             if service_name not in services:
-                services[service_name] = service_class.__doc__ or "Email service"
+                services[service_name] = "Email service"
         return services
 
 
 # Register all services
 ServiceRegistry.register("xtempmail", XTempMailService)
-# ServiceRegistry.register("tempmail.plus", XTempMailService)  # Alias
 ServiceRegistry.register("mailtm", MailTMService)
-# ServiceRegistry.register("10minmail", TenMinMailService)
-# ServiceRegistry.register("tenminmail", TenMinMailService)  # Alias
-# ServiceRegistry.register("temp-mail", TenMinMailService)  # Another alias
+ServiceRegistry.register("guerrilla", GuerrillaMailService)
