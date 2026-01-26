@@ -9,6 +9,8 @@ from .config import ServiceRegistry
 from .storage import AccountStorage
 from .services.base import ServiceMessage
 from .logging_config import setup_logging, get_logger
+from . import __about__
+
 
 # Get module logger
 logger = get_logger(__name__)
@@ -67,6 +69,12 @@ Examples:
         )
 
         # Global options
+        parser.add_argument(
+            "-v",
+            "--version",
+            action="version",
+            version=f"%(prog)s {__about__.__version__}",
+        )
         parser.add_argument(
             "--log-level",
             choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
@@ -281,6 +289,7 @@ Examples:
             )
 
             logger.info(f"Using existing account: {account.address}")
+            print(f"tmpmail {__about__.__version__}")
             print(f"✅ Using account: {account.address}")
             await self.start_monitoring(account, args)
 
