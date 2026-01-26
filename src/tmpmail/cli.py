@@ -353,15 +353,18 @@ Examples:
             logger.info(
                 f"New message received - ID: {message.id}, From: {message.sender}"
             )
+            await self._process_message(message)
 
             # Extract links using service's method with pattern
             pattern = args.pattern or self.link_pattern
-            links = self.current_service.extract_links(message, pattern)
+            if pattern:
+                logger.debug(f"Extracting links with pattern: {pattern}")
+                links = self.current_service.extract_links(message, pattern)
 
-            if links:
-                await self._process_link(links[0])
-            else:
-                logger.debug(f"No links found in message {message.id}")
+                if links:
+                    await self._process_links(links)
+                else:
+                    logger.debug(f"No links found in message {message.id}")
 
         # Start monitoring
         try:
@@ -394,26 +397,35 @@ Examples:
             logger.info("Stopping monitoring service")
             await self.current_service.stop_monitoring()
 
-    async def _process_link(self, link: str):
+    async def _process_links(self, links: str):
         """Process a link (copy to clipboard and open in browser)"""
+        clean_links = []
         try:
             # Clean the link
-            clean_link = link.strip()
-            if not clean_link.startswith("http"):
-                clean_link = "https://" + clean_link
+            for link in links:
+                clean_link = link.strip()
+                clean_links.append(clean_link)
+            # if not clean_link.startswith("http"):
+            #     clean_link = "https://" + clean_link
 
             # Copy to clipboard
-            pyperclip.copy(clean_link)
-            logger.info(f"Link copied to clipboard: {clean_link}")
-            print("📋 Link copied to clipboard")
+            # pyperclip.copy(clean_link)
+            # logger.info(f"Link copied to clipboard: {clean_link}")
+            # print("📋 Link copied to clipboard")
 
-            # Open in browser
-            await self._open_in_browser(clean_link)
+            await self._open_in_browser(clean_links)
 
         except Exception as e:
             logger.error(f"Error processing Link: {e}", exc_info=True)
 
-    async def _open_in_browser(self, url: str):
+    async def _process_message(self, message: ServiceMessage):
+        """Prints a summary of a message."""
+        print(f"📧 New message from: {message.sender}")
+        print(f"   Subject: {message.subject}")
+        body_excerpt = (message.text or message.html or "")[:60]
+        print(f"   Body: {body_excerpt}...")
+
+    async def _open_in_browser(self, urls: str):
         """Open URL in browser asynchronously"""
         import shlex
 
@@ -422,14 +434,13 @@ Examples:
         # Run browser in background
         process = await asyncio.create_subprocess_exec(
             *shlex.split(browser),
-            url,
+            *urls,
             stdout=asyncio.subprocess.DEVNULL,
             stderr=asyncio.subprocess.DEVNULL,
         )
 
         # Don't wait for browser to close
-        logger.info(f"Opening URL in browser: {url}")
-        print("🌐 Opening link in browser...")
+        logger.info(f"Opening URL in browser: {' '.join(urls)}")
 
         # Check if browser opened successfully
         await asyncio.sleep(0.5)

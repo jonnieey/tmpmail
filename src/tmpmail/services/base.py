@@ -100,34 +100,15 @@ class BaseEmailService(ABC):
         import re
 
         if not pattern:
-            # Match https://www.temi.com/editor/t/ followed by any non-whitespace characters
-            pattern = r"https://www\.temi\.com/editor/t/[^\s\"'<>]+"
-
-        text = message.text or message.html or ""
-        if not text:
             return []
 
-        # Find all matches
-        matches = re.findall(pattern, text, re.IGNORECASE)
+        content = message.text or ""
+        if not content:
+            return []
 
-        # Flatten and clean results
-        links = []
-        for match in matches:
-            if isinstance(match, tuple):
-                links.extend([m for m in match if m])
-            elif match:
-                # Clean the link
-                cleaned_link = match.rstrip(".,;:!?)")
-                if cleaned_link.startswith("https://www.temi.com/editor/t/"):
-                    links.append(cleaned_link)
+        links = re.findall(pattern, content, re.IGNORECASE)
+        links = [link.rstrip(".,!?]") for link in links]
 
-        # Also check HTML for links with href attributes
-        if message.html:
-            html_pattern = r'href=[\'"]?(https://www\.temi\.com/editor/t/[^\'" >]+)'
-            html_links = re.findall(html_pattern, message.html, re.IGNORECASE)
-            links.extend(html_links)
-
-        # Return unique links only
         return list(set(links))
 
     async def close(self):

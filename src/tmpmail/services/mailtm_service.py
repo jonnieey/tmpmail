@@ -108,6 +108,7 @@ class MailTMService(BaseEmailService):
             raw_messages = await self.mailtm.get_messages(token, page=1)
 
             for raw_msg in raw_messages.hydra_member:
+                one_msg = await self.mailtm.get_message_by_id(raw_msg.id, token)
                 # Parse timestamp if available
                 timestamp = None
                 if hasattr(raw_msg, "created_at") and raw_msg.created_at:
@@ -119,8 +120,8 @@ class MailTMService(BaseEmailService):
                     if hasattr(raw_msg, "from_") and raw_msg.from_
                     else "",
                     subject=raw_msg.subject or "No Subject",
-                    text=raw_msg.intro or "",
-                    html=raw_msg.html if hasattr(raw_msg, "html") else None,
+                    text=one_msg.text or "",
+                    html=one_msg.html if hasattr(one_msg, "html") else None,
                     timestamp=timestamp,
                     attachments=[],
                     raw=raw_msg,
