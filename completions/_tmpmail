@@ -1,0 +1,55 @@
+#compdef tmpmail
+
+_tmpmail() {
+    local line
+    local -a services
+    services=(xtempmail mailtm guerrilla)
+
+    _arguments -C \
+        '(-v --version)'{-v,--version}'[Show version information]' \
+        '--log-level[Set logging level]:level:(DEBUG INFO WARNING ERROR CRITICAL)' \
+        '--log-file[Log to specified file]:file:_files' \
+        '(-q --quiet)'{-q,--quiet}'[Suppress console output]' \
+        '1: :->cmds' \
+        '*:: :->args'
+
+    case $state in
+        cmds)
+            local -a commands
+            commands=(
+                'new:Create a new email account'
+                'list:List existing accounts'
+                'use:Use an existing account'
+                'services:List available email services'
+            )
+            _describe -t commands 'tmpmail commands' commands
+        ;;
+        args)
+            case $line[1] in
+                new)
+                    _arguments \
+                        '1:service:($services)' \
+                        '--name[Custom name for email address]' \
+                        '--pattern[Custom regex pattern for link extraction]' \
+                        '--timeout[Stop monitoring after N seconds]' \
+                        '--domain[Domain for XTempMail]:domain:(mailto.plus fexpost.com fexbox.org mailbok.in.ua chitthi.in fextemp.com any.pink merepost.com)' \
+                        '--local-part[Custom local part for Guerrilla Mail]'
+                ;;
+                list)
+                    _arguments \
+                        '1:service:($services)' \
+                        '(-c --count)'{-c,--count}'[Number of accounts to show]'
+                ;;
+                use)
+                    _arguments \
+                        '1:index: ' \
+                        '--service[Filter by service]:service:($services)' \
+                        '--pattern[Custom regex pattern for link extraction]' \
+                        '--timeout[Stop monitoring after N seconds]'
+                ;;
+            esac
+        ;;
+    esac
+}
+
+_tmpmail "$@"
